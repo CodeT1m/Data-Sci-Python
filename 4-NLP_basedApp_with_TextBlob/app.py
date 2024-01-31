@@ -5,6 +5,7 @@ from flask_bootstrap import Bootstrap
 #NLP
 from textblob import TextBlob, Word
 import random
+import time
 
 app = Flask(__name__)
 
