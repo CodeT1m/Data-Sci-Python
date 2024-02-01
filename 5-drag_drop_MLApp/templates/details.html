@@ -3,5 +3,17 @@
     <head>
 
     </head>
-    <body></body>
+    <body>
+        <h2>Results</h2>
+        {(filename)}
+
+        <div class="container">
+            {{ df_table.to_html(classes="table table-striped table-hover" na_rep="-")  }}
+        </div>
+        <div class="container">
+            {% for i in df_columns %}
+            {{i}}
+            {% endfor%}
+        </div>
+    </body>
 </html>

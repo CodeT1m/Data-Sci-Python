@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_uploads import UploadSet, configure_uploads, ALL, DATA
+from  werkzeug import secure_filename
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -20,6 +21,59 @@ import numpy as np
 def index():
     return render_template('index.html', title='Home')
 
-@app.route('/datauploads')
+@app.route('/datauploads',methods=['GET','POST'])
 def datauploads():
-    return render_template('details.html')
+    if request.method == 'POST' and 'csv_data' in request.files:
+        file = request.files['csv_data']
+        filename = file.filename
+        file.save(os.path.join('static/uploadstorage', filename))
+        
+        date = str(datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"))
+        
+        # EDA Function
+        df = pd.read_csv(os.path.join('static/uploadstorage', filename))
+        df_size = df.size
+        df_shape = df.shape
+        df_columns = List(df.columns)
+        
+        df_targetname = df[df.columns[-1]].name
+        df_featurenames = df_columns[0:-1]
+        
+        # select all columns till last col
+        df_Xfeatures = df.iloc[:,0:1]
+        df_Ylabels = df[df.columns[-1]]
+        
+        # table
+        df_table = df
+        X = df_Xfeatures
+        Y = df_Ylabels
+        
+        #model building
+        models = []
+        models.append('LR', LogisticRegression())
+        models.append('LDA', LinearDiscriminantAnalysis())
+        models.append('KNN', KNeighborsClassifier())
+        models.append('CART', DecisionTreeClassifier())
+        models.append('NB', GaussianNB())
+        models.append('SVM', SVC())
+        
+        results = []
+        names = []
+        allmodels = []
+        scoring = 'accuracy'
+        
+        for name, model in models:
+            kfold = model_selection.KFold(n_splits=10, random_state=seed)
+            cv_results = model_selection.cross_val_score(model,X,Y, cv=kfold, scoring=scoring)
+            
+            results.append(cv_results)
+            names.append(name)
+            msg = '%s: %f' % (name, cv_results.mean(), cv_results.std())
+            allmodels.append(msg)
+            model_results = results
+            model_names = names
+        
+    return render_template('details.html', filename= filename, df_table=df, df_shape=df_shape, df_columns=df_columns, df_targetname=df_targetname,model_results=allmodels,model_names=name,)
+
+if __name__ == '__main__':
+    app.run(debug=True)
