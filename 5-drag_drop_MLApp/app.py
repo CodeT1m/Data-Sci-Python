@@ -2,6 +2,15 @@ from flask import Flask, render_template, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_uploads import UploadSet, configure_uploads, ALL, DATA
 from  werkzeug import secure_filename
+from sklearn.linear_model import LogisticRegression
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn import model_selection
+
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -16,6 +25,8 @@ import time
 
 import pandas as pd
 import numpy as np
+
+seed = 42  # You can use any integer value as the seed
 
 @app.route('/')
 def index():
@@ -34,7 +45,7 @@ def datauploads():
         df = pd.read_csv(os.path.join('static/uploadstorage', filename))
         df_size = df.size
         df_shape = df.shape
-        df_columns = List(df.columns)
+        df_columns = list(df.columns)
         
         df_targetname = df[df.columns[-1]].name
         df_featurenames = df_columns[0:-1]
