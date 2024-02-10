@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 //ML Aspects with Brainjs
-const brain = require('brain.js');
+const brain = require('brain');
 const data = require('./data.json');
 
 const network = new brain.recurrent.LSTM();
