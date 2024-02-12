@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\ilela\Documents\PortFolio\IT\AcerApps\Data Sci- python\Crash Course\.venv
+set VIRTUAL_ENV=C:\Users\ilela\Documents\PortFolio\IT\AcerApps\Crash Course\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 
